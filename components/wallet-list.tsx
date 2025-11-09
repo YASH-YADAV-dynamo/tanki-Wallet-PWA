@@ -37,7 +37,7 @@ export function WalletList() {
 
   if (!address) {
     return (
-      <div className="p-6 bg-gray-900/50 border border-purple-500/20 rounded-xl backdrop-blur-sm">
+      <div className="dashboard-card">
         <p className="text-gray-400">Please connect your wallet</p>
       </div>
     )
@@ -47,27 +47,27 @@ export function WalletList() {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="p-6 bg-gray-900/50 border border-purple-500/20 rounded-xl backdrop-blur-sm"
+      className="dashboard-card"
     >
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold text-purple-300">
+      <div className="dashboard-wallet-header">
+        <h2 className="dashboard-wallet-title">
           Your Smart Wallets ({wallets.length})
         </h2>
         <button
           onClick={() => refetch()}
-          className="px-4 py-2 bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/20 rounded-lg text-purple-300 text-sm transition-colors"
+          className="dashboard-refresh-btn"
         >
           Refresh
         </button>
       </div>
 
       {wallets.length === 0 ? (
-        <div className="text-center py-12">
-          <p className="text-gray-400 mb-4">No smart wallets created yet</p>
-          <p className="text-sm text-gray-500">Create your first smart wallet using the form on the left</p>
+        <div className="dashboard-empty-state">
+          <p>No smart wallets created yet</p>
+          <p className="small">Create your first smart wallet using the form</p>
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="dashboard-wallet-list">
           {wallets.map((wallet, index) => (
             <WalletCard key={wallet} walletAddress={wallet} index={index} />
           ))}
@@ -76,4 +76,3 @@ export function WalletList() {
     </motion.div>
   )
 }
-

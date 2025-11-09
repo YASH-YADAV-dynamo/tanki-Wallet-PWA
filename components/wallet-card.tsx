@@ -63,32 +63,36 @@ export function WalletCard({ walletAddress, index }: WalletCardProps) {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: index * 0.1 }}
-        className="p-4 bg-black/50 border border-purple-500/20 rounded-lg hover:border-purple-500/40 transition-colors"
+        className="wallet-card"
       >
-        <div className="flex items-start justify-between mb-4">
-          <div className="flex-1">
-            <div className="flex items-center gap-3 mb-2">
-              <h3 className="font-semibold text-purple-300">{formatAddress(walletAddress)}</h3>
+        <div className="wallet-card-header">
+          <div style={{ flex: 1 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px', flexWrap: 'wrap' }}>
+              <h3 className="wallet-address-text">{formatAddress(walletAddress)}</h3>
               {isWalletActive && !isExpired ? (
-                <span className="px-2 py-1 bg-green-500/20 border border-green-500/30 rounded text-xs text-green-400">
+                <span className="wallet-status wallet-status-active">
                   Active
                 </span>
               ) : (
-                <span className="px-2 py-1 bg-red-500/20 border border-red-500/30 rounded text-xs text-red-400">
+                <span className="wallet-status wallet-status-expired">
                   Expired
                 </span>
               )}
             </div>
-            <div className="text-sm text-gray-400 space-y-1">
-              <p>Balance: {balance ? formatEther(balance.value) : '0'} ETH</p>
+            <div className="wallet-info">
+              <div className="wallet-info-item">
+                <span>Balance: {balance ? formatEther(balance.value) : '0'} ETH</span>
+              </div>
               {remainingTime !== undefined && (
-                <p>Time Remaining: {formatTime(Number(remainingTime))}</p>
+                <div className="wallet-info-item">
+                  <span>Time Remaining: {formatTime(Number(remainingTime))}</span>
+                </div>
               )}
             </div>
           </div>
           <button
             onClick={() => setShowDetails(!showDetails)}
-            className="text-purple-400 hover:text-purple-300"
+            className="wallet-toggle"
           >
             {showDetails ? '▼' : '▶'}
           </button>
@@ -100,20 +104,20 @@ export function WalletCard({ walletAddress, index }: WalletCardProps) {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              className="mt-4 pt-4 border-t border-gray-800 space-y-2"
+              style={{ marginTop: '12px', paddingTop: '12px', borderTop: '1px solid var(--gray-800)' }}
             >
-              <div className="grid grid-cols-2 gap-2">
+              <div className="wallet-actions">
                 <button
                   onClick={() => setShowTransfer(true)}
                   disabled={!isWalletActive || isExpired}
-                  className="px-4 py-2 bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/20 rounded-lg text-purple-300 text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="wallet-action-btn"
                 >
                   Transfer
                 </button>
                 <button
                   onClick={() => setShowBundle(true)}
                   disabled={!isWalletActive || isExpired}
-                  className="px-4 py-2 bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/20 rounded-lg text-purple-300 text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="wallet-action-btn"
                 >
                   Bundle TX
                 </button>
@@ -122,7 +126,7 @@ export function WalletCard({ walletAddress, index }: WalletCardProps) {
                 <button
                   onClick={handleWithdraw}
                   disabled={isWithdrawing || !isWalletActive || isExpired}
-                  className="w-full px-4 py-2 bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 rounded-lg text-red-400 text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="wallet-action-btn wallet-withdraw-btn"
                 >
                   {isWithdrawing ? 'Withdrawing...' : 'Withdraw Funds'}
                 </button>
@@ -150,4 +154,3 @@ export function WalletCard({ walletAddress, index }: WalletCardProps) {
     </>
   )
 }
-

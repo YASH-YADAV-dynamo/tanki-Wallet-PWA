@@ -6,14 +6,14 @@ import { formatAddress } from '@/lib/utils'
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
-export function WalletButton() {
+interface WalletButtonProps {
+  buttonText?: string
+}
+
+export function WalletButton({ buttonText = 'Connect Wallet' }: WalletButtonProps) {
   const { address, isConnected } = useAccount()
   const chainId = useChainId()
-  const { connect, connectors, isPending, error } = useConnect({
-    onError: (error) => {
-      console.error('Connection error:', error)
-    },
-  })
+  const { connect, connectors, isPending, error } = useConnect()
   const { disconnect } = useDisconnect()
   const [isAutoConnecting, setIsAutoConnecting] = useState(true)
   const [showWalletOptions, setShowWalletOptions] = useState(false)
@@ -31,18 +31,19 @@ export function WalletButton() {
 
   if (isConnected && address) {
     return (
-      <div className="flex items-center gap-3">
-        <div className="px-4 py-2 bg-purple-500/10 border border-purple-500/20 rounded-lg">
-          <span className="text-sm font-medium text-purple-300">
+      <div className="flex items-center gap-3" style={{ flexWrap: 'wrap' }}>
+        <div className="wallet-address">
+          <span style={{ fontSize: '0.875rem', fontWeight: '500' }}>
             {formatAddress(address)}
           </span>
           {chainId !== sepolia.id && (
-            <span className="ml-2 text-xs text-yellow-400">Wrong Network</span>
+            <span className="ml-2" style={{ fontSize: '0.75rem', color: 'var(--yellow-400)' }}>Wrong Network</span>
           )}
         </div>
         <button
           onClick={() => disconnect()}
-          className="px-4 py-2 bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 rounded-lg text-red-400 transition-colors"
+          className="btn btn-danger"
+          style={{ padding: '8px 16px', fontSize: '0.875rem' }}
         >
           Disconnect
         </button>
@@ -63,8 +64,10 @@ export function WalletButton() {
 
   if (availableConnectors.length === 0) {
     return (
-      <div className="px-6 py-3 bg-gray-500/20 rounded-lg text-gray-400 text-sm">
-        Please install MetaMask or another Web3 wallet
+      <div className="card" style={{ padding: '12px 24px', background: 'rgba(107, 114, 128, 0.2)' }}>
+        <span style={{ color: 'var(--gray-400)', fontSize: '0.875rem' }}>
+          Please install MetaMask or another Web3 wallet
+        </span>
       </div>
     )
   }
@@ -72,8 +75,8 @@ export function WalletButton() {
   // Show connecting state during auto-connect
   if (isAutoConnecting && typeof window !== 'undefined' && window.ethereum) {
     return (
-      <div className="px-6 py-3 bg-purple-500/10 border border-purple-500/20 rounded-lg">
-        <span className="text-sm font-medium text-purple-300">
+      <div className="wallet-address">
+        <span style={{ fontSize: '0.875rem', fontWeight: '500' }}>
           Connecting...
         </span>
       </div>
@@ -110,12 +113,12 @@ export function WalletButton() {
         <button
           onClick={() => connect({ connector: availableConnectors[0], chainId: sepolia.id })}
           disabled={isPending}
-          className="px-6 py-3 bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400 rounded-lg font-semibold text-white transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="btn btn-primary"
         >
-          {isPending ? 'Connecting...' : 'Connect Wallet'}
+          {isPending ? 'Connecting...' : buttonText}
         </button>
         {error && (
-          <p className="text-xs text-red-400 max-w-xs text-right">
+          <p style={{ fontSize: '0.75rem', color: 'var(--red-400)', maxWidth: '256px', textAlign: 'right' }}>
             {error.message || 'Failed to connect. Please try again.'}
           </p>
         )}
@@ -128,9 +131,9 @@ export function WalletButton() {
       <button
         onClick={() => setShowWalletOptions(!showWalletOptions)}
         disabled={isPending}
-        className="px-6 py-3 bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400 rounded-lg font-semibold text-white transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="btn btn-primary"
       >
-        Connect Wallet
+        {buttonText}
       </button>
 
       <AnimatePresence>
@@ -139,9 +142,9 @@ export function WalletButton() {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="absolute top-full mt-2 right-0 w-64 bg-gray-900 border border-purple-500/20 rounded-lg shadow-xl z-50 overflow-hidden"
+            className="wallet-dropdown"
           >
-            <div className="p-2">
+            <div style={{ padding: '8px' }}>
               {availableConnectors.map((connector) => (
                 <button
                   key={connector.uid}
@@ -150,12 +153,10 @@ export function WalletButton() {
                     setShowWalletOptions(false)
                   }}
                   disabled={isPending}
-                  className="w-full px-4 py-3 flex items-center gap-3 hover:bg-purple-500/10 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="wallet-option"
                 >
-                  <span className="text-xl">{getConnectorIcon(connector)}</span>
-                  <span className="text-sm font-medium text-white">
-                    {getConnectorName(connector)}
-                  </span>
+                  <span className="wallet-option-icon">{getConnectorIcon(connector)}</span>
+                  <span>{getConnectorName(connector)}</span>
                 </button>
               ))}
             </div>
@@ -164,7 +165,7 @@ export function WalletButton() {
       </AnimatePresence>
 
       {error && (
-        <p className="text-xs text-red-400 max-w-xs text-right">
+        <p style={{ fontSize: '0.75rem', color: 'var(--red-400)', maxWidth: '256px', textAlign: 'right' }}>
           {error.message || 'Failed to connect. Please try again.'}
         </p>
       )}
@@ -172,11 +173,10 @@ export function WalletButton() {
       {/* Click outside to close */}
       {showWalletOptions && (
         <div
-          className="fixed inset-0 z-40"
+          className="overlay"
           onClick={() => setShowWalletOptions(false)}
         />
       )}
     </div>
   )
 }
-
