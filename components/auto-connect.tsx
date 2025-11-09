@@ -55,15 +55,16 @@ export function AutoConnect() {
   useEffect(() => {
     if (typeof window === 'undefined' || !window.ethereum) return
 
-    const handleAccountsChanged = (accounts: string[]) => {
-      if (accounts.length === 0) {
+    const handleAccountsChanged = (...args: unknown[]) => {
+      const accounts = args[0] as string[]
+      if (accounts && accounts.length === 0) {
         // User disconnected their wallet
         return
       }
       // Account changed - wagmi will handle reconnection
     }
 
-    const handleChainChanged = () => {
+    const handleChainChanged = (...args: unknown[]) => {
       // Chain changed - wagmi will handle this
       window.location.reload()
     }

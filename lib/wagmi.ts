@@ -33,7 +33,7 @@ if (walletConnectProjectId) {
         icons: [],
       },
       showQrModal: true,
-    })
+    }) as any
   )
 }
 
