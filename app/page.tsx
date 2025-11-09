@@ -1,7 +1,7 @@
 'use client'
 
 import { useAccount } from 'wagmi'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { WalletButton } from '@/components/wallet-button'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
@@ -10,6 +10,7 @@ import './landing.css'
 export default function LandingPage() {
   const { isConnected } = useAccount()
   const [mounted, setMounted] = useState(false)
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   useEffect(() => {
     setMounted(true)
@@ -27,8 +28,41 @@ export default function LandingPage() {
         
         <nav className="nav">
           <div className="nav-logo">Tanki Wallet</div>
-          <WalletButton />
+          <div className="nav-actions">
+            <div className="nav-desktop">
+              <WalletButton />
+            </div>
+            <button
+              className="nav-hamburger"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              aria-label="Toggle menu"
+            >
+              <span></span>
+              <span></span>
+              <span></span>
+            </button>
+          </div>
         </nav>
+
+        {/* Mobile Menu */}
+        <AnimatePresence>
+          {isMobileMenuOpen && (
+            <>
+              <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="nav-mobile-menu"
+              >
+                <WalletButton />
+              </motion.div>
+              <div
+                className="overlay"
+                onClick={() => setIsMobileMenuOpen(false)}
+              />
+            </>
+          )}
+        </AnimatePresence>
 
         <main className="landing-main">
           <div className="container">
@@ -79,10 +113,42 @@ export default function LandingPage() {
         <motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
+          className="nav-actions"
         >
-          <WalletButton />
+          <div className="nav-desktop">
+            <WalletButton buttonText="Get Started" />
+          </div>
+          <button
+            className="nav-hamburger"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            aria-label="Toggle menu"
+          >
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
         </motion.div>
       </nav>
+
+      {/* Mobile Menu */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="nav-mobile-menu"
+            >
+              <WalletButton buttonText="Get Started" />
+            </motion.div>
+            <div
+              className="overlay"
+              onClick={() => setIsMobileMenuOpen(false)}
+            />
+          </>
+        )}
+      </AnimatePresence>
 
       {/* Hero Section */}
       <main className="landing-main">
@@ -106,6 +172,7 @@ export default function LandingPage() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               style={{ display: 'inline-block' }}
+              className="hero-button"
             >
               <WalletButton buttonText="Get Started" />
             </motion.div>

@@ -1,24 +1,32 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { useAccount, useConnect } from 'wagmi'
 import { sepolia } from 'wagmi/chains'
 
 export function AutoConnect() {
   const { isConnected } = useAccount()
   const { connect, connectors } = useConnect()
-  const [hasTriedAutoConnect, setHasTriedAutoConnect] = useState(false)
+  const hasAutoConnectedRef = useRef(false)
+  const hasInitializedRef = useRef(false)
 
   useEffect(() => {
     // Only auto-connect once and if not already connected
-    if (isConnected || hasTriedAutoConnect) return
+    if (isConnected || hasAutoConnectedRef.current || hasInitializedRef.current) {
+      return
+    }
+
+    // Mark as initialized immediately to prevent multiple attempts
+    hasInitializedRef.current = true
 
     const tryAutoConnect = async () => {
       // Wait a bit for wallet extensions to initialize
-      await new Promise(resolve => setTimeout(resolve, 300))
+      await new Promise(resolve => setTimeout(resolve, 500))
 
       // Check if we're in the browser
-      if (typeof window === 'undefined') return
+      if (typeof window === 'undefined') {
+        return
+      }
 
       // Check for injected wallet (MetaMask, Coinbase Wallet, etc.)
       const injectedConnector = connectors.find(c => c.type === 'injected')
@@ -30,28 +38,29 @@ export function AutoConnect() {
           
           if (accounts && accounts.length > 0) {
             // Wallet is authorized, try to connect
-            connect({ 
-              connector: injectedConnector,
-              chainId: sepolia.id,
-            })
-            setHasTriedAutoConnect(true)
-          } else {
-            setHasTriedAutoConnect(true)
+            hasAutoConnectedRef.current = true
+            try {
+              await connect({ 
+                connector: injectedConnector,
+                chainId: sepolia.id,
+              })
+            } catch (connectError) {
+              // Connection failed, but we tried
+              console.debug('Auto-connect failed:', connectError)
+              hasAutoConnectedRef.current = false
+            }
           }
         } catch (error) {
           // Silently fail - user can manually connect
           console.debug('Auto-connect skipped:', error)
-          setHasTriedAutoConnect(true)
         }
-      } else {
-        setHasTriedAutoConnect(true)
       }
     }
 
     tryAutoConnect()
-  }, [isConnected, hasTriedAutoConnect, connectors, connect])
+  }, [isConnected, connect, connectors])
 
-  // Listen for account changes
+  // Listen for account changes (removed chain change reload to prevent infinite loops)
   useEffect(() => {
     if (typeof window === 'undefined' || !window.ethereum) return
 
@@ -61,20 +70,13 @@ export function AutoConnect() {
         // User disconnected their wallet
         return
       }
-      // Account changed - wagmi will handle reconnection
-    }
-
-    const handleChainChanged = (...args: unknown[]) => {
-      // Chain changed - wagmi will handle this
-      window.location.reload()
+      // Account changed - wagmi will handle reconnection automatically
     }
 
     window.ethereum.on?.('accountsChanged', handleAccountsChanged)
-    window.ethereum.on?.('chainChanged', handleChainChanged)
 
     return () => {
       window.ethereum?.removeListener?.('accountsChanged', handleAccountsChanged)
-      window.ethereum?.removeListener?.('chainChanged', handleChainChanged)
     }
   }, [])
 

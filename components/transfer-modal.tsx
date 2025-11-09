@@ -6,6 +6,7 @@ import { SMART_WALLET_ABI } from '@/lib/contracts'
 import { parseEther, Address } from 'viem'
 import { motion, AnimatePresence } from 'framer-motion'
 import { formatAddress } from '@/lib/utils'
+import '../app/modals.css'
 
 interface TransferModalProps {
   walletAddress: `0x${string}`
@@ -87,7 +88,7 @@ export function TransferModal({ walletAddress, isActive, onClose }: TransferModa
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          className="modal-overlay"
           onClick={onClose}
         >
           <motion.div
@@ -95,7 +96,8 @@ export function TransferModal({ walletAddress, isActive, onClose }: TransferModa
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.9, opacity: 0 }}
             onClick={(e) => e.stopPropagation()}
-            className="bg-gray-900 border border-purple-500/20 rounded-xl p-6 max-w-md w-full"
+            className="modal-content"
+            style={{ maxWidth: '512px' }}
           >
             <h3 className="text-xl font-bold mb-4 text-red-400">Wallet Expired</h3>
             <p className="text-gray-400 mb-4">This wallet has expired and cannot execute transactions.</p>
@@ -113,25 +115,26 @@ export function TransferModal({ walletAddress, isActive, onClose }: TransferModa
 
   return (
     <AnimatePresence>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-        onClick={onClose}
-      >
         <motion.div
-          initial={{ scale: 0.9, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          exit={{ scale: 0.9, opacity: 0 }}
-          onClick={(e) => e.stopPropagation()}
-          className="bg-gray-900 border border-purple-500/20 rounded-xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="modal-overlay"
+          onClick={onClose}
         >
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-2xl font-bold text-purple-300">Transfer Funds</h3>
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.9, opacity: 0 }}
+            onClick={(e) => e.stopPropagation()}
+            className="modal-content"
+            style={{ maxWidth: '768px' }}
+          >
+          <div className="modal-header">
+            <h3 className="modal-title">Transfer Funds</h3>
             <button
               onClick={onClose}
-              className="text-gray-400 hover:text-white text-2xl"
+              className="modal-close"
             >
               ×
             </button>

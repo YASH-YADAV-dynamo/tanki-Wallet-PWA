@@ -5,6 +5,7 @@ import { useWriteContract, useWaitForTransactionReceipt } from 'wagmi'
 import { SMART_WALLET_ABI } from '@/lib/contracts'
 import { parseEther, Address, encodeFunctionData } from 'viem'
 import { motion, AnimatePresence } from 'framer-motion'
+import '../app/modals.css'
 
 interface BundleTransactionModalProps {
   walletAddress: `0x${string}`

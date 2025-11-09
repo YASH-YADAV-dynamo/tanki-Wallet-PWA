@@ -96,20 +96,11 @@ export function WalletButton({ buttonText = 'Connect Wallet' }: WalletButtonProp
     return connector.name || 'Wallet'
   }
 
-  const getConnectorIcon = (connector: any) => {
-    if (connector.id === 'walletConnect' || connector.type === 'walletConnect') {
-      return '🔗'
-    }
-    if (connector.id === 'metaMask' || connector.id === 'metaMaskSDK') {
-      return '🦊'
-    }
-    return '💼'
-  }
 
   // If only one connector, connect directly
   if (availableConnectors.length === 1) {
     return (
-      <div className="flex flex-col items-end gap-2">
+      <div className="wallet-button-container">
         <button
           onClick={() => connect({ connector: availableConnectors[0], chainId: sepolia.id })}
           disabled={isPending}
@@ -118,7 +109,7 @@ export function WalletButton({ buttonText = 'Connect Wallet' }: WalletButtonProp
           {isPending ? 'Connecting...' : buttonText}
         </button>
         {error && (
-          <p style={{ fontSize: '0.75rem', color: 'var(--red-400)', maxWidth: '256px', textAlign: 'right' }}>
+          <p className="wallet-error">
             {error.message || 'Failed to connect. Please try again.'}
           </p>
         )}
@@ -127,7 +118,7 @@ export function WalletButton({ buttonText = 'Connect Wallet' }: WalletButtonProp
   }
 
   return (
-    <div className="relative flex flex-col items-end gap-2">
+    <div className="wallet-button-container">
       <button
         onClick={() => setShowWalletOptions(!showWalletOptions)}
         disabled={isPending}
@@ -155,7 +146,6 @@ export function WalletButton({ buttonText = 'Connect Wallet' }: WalletButtonProp
                   disabled={isPending}
                   className="wallet-option"
                 >
-                  <span className="wallet-option-icon">{getConnectorIcon(connector)}</span>
                   <span>{getConnectorName(connector)}</span>
                 </button>
               ))}
@@ -165,7 +155,7 @@ export function WalletButton({ buttonText = 'Connect Wallet' }: WalletButtonProp
       </AnimatePresence>
 
       {error && (
-        <p style={{ fontSize: '0.75rem', color: 'var(--red-400)', maxWidth: '256px', textAlign: 'right' }}>
+        <p className="wallet-error">
           {error.message || 'Failed to connect. Please try again.'}
         </p>
       )}

@@ -61,7 +61,13 @@ NEXT_PUBLIC_SMART_WALLET_FACTORY_ADDRESS=0x69175C0ac62348714Eec98BA7716F70474AD8
 npm run dev
 ```
 
-5. Open [http://localhost:3000](http://localhost:3000) in your browser
+   **Or use the clean start script** (recommended if you encounter lock file errors):
+   ```bash
+   npm run dev:clean
+   ```
+   This automatically clears any lock files and stops conflicting processes before starting.
+
+5. Open [http://localhost:3000](http://localhost:3000) in your browser (or the port shown in the terminal)
 
 ## Usage
 
