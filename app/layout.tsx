@@ -11,6 +11,22 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "Tanki Wallet - Smart Time-Based Wallets",
   description: "Create smart wallets that automatically expire. Transfer funds and execute bundle transactions with a single signature.",
+  manifest: "/manifest.json",
+  themeColor: "#000000",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Tanki Wallet",
+  },
+  icons: {
+    icon: [
+      { url: "/icon-192x192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icon-512x512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [
+      { url: "/icon-192x192.png", sizes: "192x192", type: "image/png" },
+    ],
+  },
 };
 
 export default function RootLayout({
