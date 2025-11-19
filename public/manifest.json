@@ -3,6 +3,7 @@
   "short_name": "Tanki Wallet",
   "description": "Create smart wallets that automatically expire. Transfer funds and execute bundle transactions with a single signature.",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#000000",
   "theme_color": "#000000",
@@ -19,6 +20,44 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
+    }
+  ],
+  "protocol_handlers": [
+    {
+      "protocol": "web+tanki",
+      "url": "/?action=%s"
+    },
+    {
+      "protocol": "tanki-wallet",
+      "url": "/?action=%s"
+    }
+  ],
+  "url_handlers": [
+    {
+      "origin": "*"
+    }
+  ],
+  "share_target": {
+    "action": "/",
+    "method": "GET",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  },
+  "shortcuts": [
+    {
+      "name": "Dashboard",
+      "short_name": "Dashboard",
+      "description": "Go to dashboard",
+      "url": "/dashboard",
+      "icons": [
+        {
+          "src": "/icon-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
     }
   ]
 }

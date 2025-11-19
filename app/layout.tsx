@@ -17,6 +17,15 @@ export const metadata: Metadata = {
     statusBarStyle: "black-translucent",
     title: "Tanki Wallet",
   },
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    siteName: "Tanki Wallet",
+    title: "Tanki Wallet - Smart Time-Based Wallets",
+    description: "Create smart wallets that automatically expire. Transfer funds and execute bundle transactions with a single signature.",
+  },
   icons: {
     icon: [
       { url: "/icon-192x192.png", sizes: "192x192", type: "image/png" },
