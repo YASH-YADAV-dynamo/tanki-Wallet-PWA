@@ -3,6 +3,10 @@ import withPWA from "next-pwa";
 
 const nextConfig: NextConfig = {
   /* config options here */
+  // Explicitly use webpack for next-pwa compatibility
+  webpack: (config, { isServer }) => {
+    return config;
+  },
 };
 
 const pwaConfig = withPWA({
